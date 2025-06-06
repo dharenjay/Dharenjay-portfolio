@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Portfolio Web</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Root CSS variables for theming */
+    :root {
+      --color-bg: #000000;
+      --color-text: #ffffff;
+      --color-peach: #ffdab9;
+      --color-peach-hover: #ffcba4;
+      --color-border: #ffdab9;
+      --color-btn-bg: #ffdab9;
+      --color-btn-bg-hover: #ffcba4;
+      --color-input-bg: rgba(0,0,0,0.3);
+    }
+    /* White Theme */
+    :root.theme-white {
+      --color-bg: #ffffff;
+      --color-text: #000000;
+      --color-peach: #ff7f50; /* coral peach for contrast */
+      --color-peach-hover: #ff5c2e;
+      --color-border: #ff7f50;
+      --color-btn-bg: #ff7f50;
+      --color-btn-bg-hover: #ff5c2e;
+      --color-input-bg: rgba(255,255,255,0.6);
+    }
+    /* Light Blue Theme */
+    :root.theme-lightblue {
+      --color-bg: #dceeFB;
+      --color-text: #0f172a;
+      --color-peach: #0ea5e9; /* blue-500 */
+      --color-peach-hover: #0284c7; /* blue-600 */
+      --color-border: #0ea5e9;
+      --color-btn-bg: #0ea5e9;
+      --color-btn-bg-hover: #0284c7;
+      --color-input-bg: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Apply theme colors */
+    body {
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    .text-peach {
+      color: var(--color-peach) !important;
+      transition: color 0.5s ease;
+    }
+    .bg-peach {
+      background-color: var(--color-peach) !important;
+      transition: background-color 0.5s ease;
+    }
+    .hover\:bg-peach-hover:hover {
+      background-color: var(--color-peach-hover) !important;
+    }
+    .border-peach {
+      border-color: var(--color-border) !important;
+      transition: border-color 0.5s ease;
+    }
+    .nav-active {
+      @apply font-semibold border-b-2;
+      border-color: var(--color-border) !important;
+      color: var(--color-peach) !important;
+    }
+    input, textarea {
+      background-color: var(--color-input-bg) !important;
+      color: var(--color-text) !important;
+      border-color: var(--color-border) !important;
+      transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
+    }
+    input::placeholder, textarea::placeholder {
+      color: var(--color-text);
+      opacity: 0.7;
+    }
+
+    button[type="submit"] {
+      background-color: var(--color-btn-bg) !important;
+      color: var(--color-text) !important;
+      transition: background-color 0.3s ease;
+    }
+    button[type="submit"]:hover {
+      background-color: var(--color-btn-bg-hover) !important;
+    }
+
+    /* Custom animation for zoom */
+    @keyframes zoomIn {
+      0% {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    @keyframes fadeInZoom {
+      0% {
+        opacity: 0;
+        transform: scale(0.85);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .zoom-in {
+      animation: zoomIn 1s ease forwards;
+    }
+    .fade-zoom-in {
+      animation: fadeInZoom 0.6s ease forwards;
+    }
+
+    /* Hide layers by default */
+    .hidden-layer {
+      display: none;
+    }
+
+    /* Theme selection buttons */
+    .theme-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 9999px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color 0.3s ease;
+    }
+    .theme-btn:hover {
+      border-color: var(--color-peach);
+    }
+    .theme-btn.active {
+      border-color: var(--color-peach);
+      box-shadow: 0 0 6px var(--color-peach);
+    }
+    /* Specific colors for theme buttons */
+    .theme-black {
+      background-color: #000000;
+    }
+    .theme-white {
+      background-color: #ffffff;
+      border: 2px solid #aaa;
+    }
+    .theme-lightblue {
+      background-color: #38bdf8; /* Tailwind blue-400 */
+    }
+    /* Circle style for logo image */
+    .logo-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 9999px;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 2px solid var(--color-peach);
+      box-shadow: 0 0 6px var(--color-peach);
+    }
+    .logo-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+
+    }
+
+    /* Mobile Menu hidden by default */
+    #mobile-menu {
+      display: none;
+    }
+    #mobile-menu.open {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <!-- Nav Bar -->
+  <nav class="flex justify-between items-center p-4 border-b border-peach sticky top-0 z-50 bg-var-bg">
+    <div class="flex items-center space-x-3 cursor-default select-none">
+      <!-- Circle style logo image -->
+      <div class="logo-circle" aria-label="Logo Image">
+        <img src="https://scontent.fmnl17-5.fna.fbcdn.net/v/t39.30808-6/499880358_1265955168429290_3240075150082515647_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeH-rTtRSU5z5kmNji_PVKFU2wqbYV5KTAPbCpthXkpMA4WrTfG8dlT2AkI6oD5KKVaaZw0QuiDoDuvqjCGQYFyP&_nc_ohc=ubxHA9tMCZQQ7kNvwF9bJAO&_nc_oc=AdnyuIYno_rMU4MIfOVuCR7MchIf2iqupPecnZ26NqMmthgitCMMBG9UBGKAqy7KsuM&_nc_zt=23&_nc_ht=scontent.fmnl17-5.fna&_nc_gid=86O1Thv2U895owa_QCjGjQ&oh=00_AfKZ2HDj8cfvHxDzbjPa1AREzzkxJkP2Ls6E89OqOKLWHw&oe=68443A61" alt="Logo Image of Eldharenjay" />
+      </div>
+      <span class="text-2xl font-bold text-peach">-DHARENJAY-</span>
+    </div>
+
+    <!-- Desktop Menu -->
+    <ul id="navButtons" class="hidden md:flex space-x-8 text-lg">
+      <li>
+        <button data-target="home" class="nav-btn focus:outline-none hover:text-peach transition">Home</button>
+      </li>
+      <li>
+        <button data-target="about" class="nav-btn focus:outline-none hover:text-peach transition">About Me</button>
+      </li>
+      <li>
+        <button data-target="contact" class="nav-btn focus:outline-none hover:text-peach transition">Contact</button>
+      </li>
+      <li>
+        <button data-target="projects" class="nav-btn focus:outline-none hover:text-peach transition">My Skills</button>
+      </li>
+      <li>
+        <button data-target="achievements" class="nav-btn focus:outline-none hover:text-peach transition">My Achievements</button>
+      </li>
+    </ul>
+
+    <!-- Theme selector -->
+    <div class="hidden md:flex items-center space-x-3 ml-4">
+      <button aria-label="Black theme" title="Black Theme" class="theme-btn theme-black" data-theme="black"></button>
+      <button aria-label="White theme" title="White Theme" class="theme-btn theme-white" data-theme="white"></button>
+      <button aria-label="Light blue theme" title="Light Blue Theme" class="theme-btn theme-lightblue" data-theme="lightblue"></button>
+    </div>
+
+    <!-- Mobile menu toggle button -->
+    <button id="menu-toggle" aria-label="Toggle Menu" class="md:hidden flex flex-col justify-center items-center w-8 h-8 text-peach focus:outline-none" type="button">
+      <span class="block w-8 h-0.5 bg-current mb-1 rounded"></span>
+      <span class="block w-8 h-0.5 bg-current mb-1 rounded"></span>
+      <span class="block w-8 h-0.5 bg-current rounded"></span>
+    </button>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="md:hidden bg-var-bg border-b border-peach">
+    <ul class="flex flex-col px-4 py-3 space-y-2 text-lg">
+      <li>
+        <button data-target="home" class="nav-btn block w-full text-left px-3 py-2 rounded hover:text-peach focus:outline-none focus:bg-peach/20">Home</button>
+      </li>
+      <li>
+        <button data-target="about" class="nav-btn block w-full text-left px-3 py-2 rounded hover:text-peach focus:outline-none focus:bg-peach/20">About Me</button>
+      </li>
+      <li>
+        <button data-target="contact" class="nav-btn block w-full text-left px-3 py-2 rounded hover:text-peach focus:outline-none focus:bg-peach/20">Contact</button>
+      </li>
+      <li>
+        <button data-target="projects" class="nav-btn block w-full text-left px-3 py-2 rounded hover:text-peach focus:outline-none focus:bg-peach/20">My Skills</button>
+      </li>
+      <li>
+        <button data-target="achievements" class="nav-btn block w-full text-left px-3 py-2 rounded hover:text-peach focus:outline-none focus:bg-peach/20">My Achievements</button>
+      </li>
+      <!-- Theme selector mobile -->
+      <li class="flex space-x-3 mt-2">
+        <button aria-label="Black theme" title="Black Theme" class="theme-btn theme-black" data-theme="black"></button>
+        <button aria-label="White theme" title="White Theme" class="theme-btn theme-white" data-theme="white"></button>
+        <button aria-label="Light blue theme" title="Light Blue Theme" class="theme-btn theme-lightblue" data-theme="lightblue"></button>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Main content container -->
+  <main class="flex-grow container mx-auto px-6 py-10 min-h-[70vh]">
+
+    <!-- Home Layer -->
+    <section id="home" class="layer zoom-in">
+      <div class="flex flex-col items-center text-center max-w-3xl mx-auto">
+        <img
+          src="https://scontent.fmnl17-5.fna.fbcdn.net/v/t39.30808-6/485984162_1221488069542667_3607518330337157852_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeGwbAbmFGp5dK8MIJVO2hHREHsnxEwixLEQeyfETCLEsfrEDqWZENwKOjn4AxrW0kW7uV74k5tqwgdqMIdeXtV1&_nc_ohc=6aVujj9J2ZEQ7kNvwFC5uEx&_nc_oc=AdmQnnZBnBKVIQ4jBBvQb0oAIHDt1D_3CVLYCCBuY4W21EWIEScYrCpGGt3kkF_gGxg&_nc_zt=23&_nc_ht=scontent.fmnl17-5.fna&_nc_gid=SHloShqV3dqLh_swcuLjig&oh=00_AfK4QEmTzhPLboWLHpbhf3-Mc1yLiLu4fdRaaBWMw17-oA&oe=68443B8C"
+          alt="Eldharenjay Picture"
+          class="rounded-full w-40 h-40 mb-6 object-cover border-4 border-peach shadow-lg"
+        />
+        <h1 class="text-4xl font-extrabold mb-4 text-peach">Hello, I'm Eldharenjay</h1>
+        <p class="text-lg leading-relaxed max-w-md">
+          Hi, I’m Eldharenjay Boa!
+Welcome to my portfolio website.
+
+I'm a first-year college student pursuing a degree in Information Technology at STI College Alabang. This site showcases my journey, skills, and projects as I grow in the world of tech. Feel free to explore my achievements, learn more about me, and check out the work I've done so far. Let’s level up together!
+
+
+        </p>
+      </div>
+    </section>
+
+    <!-- About Me Layer -->
+    <section id="about" class="layer hidden-layer max-w-md mx-auto space-y-6">
+      <h2 class="text-3xl font-bold text-peach mb-6 text-center">About Me</h2>
+      <div class="bg-white bg-opacity-10 rounded-lg p-6 shadow-lg">
+        <p class="mb-4 text-lg leading-relaxed">
+          Hi! I'm Eldharenjay, a web developer with a passion for modern, sleek design and seamless user experience.
+        </p>
+        <ul class="space-y-3 text-opacity-90" style="color: var(--color-text)">
+          <li><span class="font-semibold text-peach">Birthday:</span> November 05, 2005</li>
+          <li><span class="font-semibold text-peach">City:</span> Manila Paranaque, Philippines</li>
+          <li><span class="font-semibold text-peach">Age:</span> 19 years old</li>
+          <li><span class="font-semibold text-peach">Phone Number:</span> +63 926 710 6393</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Contact Layer -->
+    <section id="contact" class="layer hidden-layer max-w-md mx-auto space-y-6">
+      <h2 class="text-3xl font-bold text-peach mb-6 text-center">Contact Me</h2>
+      <form id="contact-form" action="mailto:eldharenjay@gmail.com" method="POST" enctype="text/plain" class="bg-white bg-opacity-10 rounded-lg p-6 shadow-lg flex flex-col space-y-4" style="color:var(--color-text)" onsubmit="return handleSubmit(event)">
+        <label>
+          <span class="block mb-1 font-semibold text-peach">Name</span>
+          <input type="text" name="name" placeholder="Your Name" required class="w-full rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-peach" />
+        </label>
+        <label>
+          <span class="block mb-1 font-semibold text-peach">Email</span>
+          <input type="email" name="email" placeholder="you@example.com" required class="w-full rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-peach" />
+        </label>
+        <label>
+          <span class="block mb-1 font-semibold text-peach">Message</span>
+          <textarea name="message" rows="4" placeholder="Your message..." required class="w-full rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-peach"></textarea>
+        </label>
+        <button type="submit" class="self-start rounded shadow font-semibold px-6 py-2">
+          Send
+        </button>
+      </form>
+      <p id="form-status" class="mt-2 text-center"></p>
+    </section>
+
+    <!-- My skills Layer -->
+    <section id="projects" class="layer hidden-layer max-w-5xl mx-auto space-y-8">
+      <h2 class="text-3xl font-bold text-peach mb-6 text-center">My Skills</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- My skills  -->
+        <article class="bg-white bg-opacity-10 rounded-lg p-6 shadow-lg hover:scale-105 transform transition">
+  <!-- Skills image -->
+  <img src="https://lessonsinyourhome.net/wp-content/uploads/2022/03/Drums-vs.-Percussion-Whats-the-difference.jpg" alt="Screenshot of Project One" class="w-full h-48 object-cover rounded mb-4">
+
+  <!-- Project title -->
+  <h3 class="text-xl font-semibold mb-2 text-peach">Skills One</h3>
+
+  <!-- Description -->
+  <p class="text-opacity-90">
+    
+  </p>
+
+  <!-- View project link -->
+  <a href="https://www.facebook.com/reel/1181373852988722" target="_blank" class="text-peach underline mt-3 inline-block">View Skills</a>
+  </article>
+
+        <article class="bg-white bg-opacity-10 rounded-lg p-6 shadow-lg hover:scale-105 transform transition">
+  <!-- Skills image 2 -->
+  <img src="https://www.msilangley.com/wp-content/uploads/2022/12/piano-keys-1030x587-1.jpg" alt="Screenshot of Project One" class="w-full h-48 object-cover rounded mb-4">
+
+  <!-- Project title -->
+  <h3 class="text-xl font-semibold mb-2 text-peach">Skills two</h3>
+
+  <!-- Description -->
+  <p class="text-opacity-90"></p>
+
+  <!-- View project link -->
+  <a href="https://www.facebook.com/stories/?card_id=UzpfSVNDOjY2MjkwNDA1MzA5NTI3MQ%3D%3D&view_single=true" target="_blank" class="text-peach underline mt-3 inline-block">View Skills</a>
+  </article>
+
+      </div>
+    </section>
+
+    <!-- Achievements Layer -->
+    <section id="achievements" class="layer hidden-layer max-w-4xl mx-auto space-y-6">
+      <h2 class="text-3xl font-bold text-peach mb-6 text-center">My Achievements</h2>
+      <ul class="list-disc list-inside space-y-3 text-opacity-90" style="color: var(--color-text)">
+          
+    <li class="flex items-center space-x-4">
+      <img src="https://scontent.fmnl17-4.fna.fbcdn.net/v/t39.30808-6/504706847_1277613687263438_4403216351933820627_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeGI8CTKSoSo9WhTdPazUAxRs-8fxeigrMiz7x_F6KCsyGCRT7UADCtzdRbHrvn7-CX7Cl-z3ZAnnr7Glxi1uhUU&_nc_ohc=ej84Xwf3PeoQ7kNvwFlbCWe&_nc_oc=Adl9PnTmCiIhklfFMzbavoBb1Y9QFc6K6IrpnpqsfdqqoFTPikv7pRAPqroGR-nrqNA&_nc_zt=23&_nc_ht=scontent.fmnl17-4.fna&_nc_gid=osPmyDNurKQZfbTSbNcxyw&oh=00_AfOKDyXhdA6gx7NOLYge2LmVBkTCrWrAciRZYaTU2N2Sgw&oe=68485577" alt="Certificate 1" class="w-24 h-24 object-cover rounded shadow">
+      <span class="text-lg" style="color: var(--color-text)">NSTP COMPLETION CERTIFICATE</span>
+    </li>
+
+     <li class="flex items-center space-x-4">
+      <img src="https://scontent.fmnl17-2.fna.fbcdn.net/v/t39.30808-6/504936706_1277620930596047_1300443184725160004_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeG8dC5ElkXzX-YRsudFw_crHu5a4jgSauQe7lriOBJq5Dg3puDusGPtYN5-4kTcGv95EOH41IXRT18XVqaL7gzi&_nc_ohc=xksoWeCgDQsQ7kNvwFSxOOT&_nc_oc=AdmAWDBJ4vCf96ZqHNiQmKypIHDa-5z2NjIq4fSDYtLxd9dNCmrx6ymX3y5KTabffeA&_nc_zt=23&_nc_ht=scontent.fmnl17-2.fna&_nc_gid=MzPMxRSIWr-iWdDpaVYMFQ&oh=00_AfOXrfttSRjOvyDLP_moW4c3j15Jg4IZ8h9Xih5HlJwzcw&oe=68487309" alt="Certificate 1" class="w-24 h-24 object-cover rounded shadow">
+      <span class="text-lg" style="color: var(--color-text)">SHS GRADUATION CERTIFICATE</span>
+    </li>
+
+    <li class="flex items-center space-x-4">
+      <img src="https://scontent.fmnl17-1.fna.fbcdn.net/v/t39.30808-6/504595761_1277644650593675_6483896098830638341_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEjZDm7_GTXYBBol5l0lHLGneJX8bnlg66d4lfxueWDrgJ2QVC_6rjwWJNift0X0-Cx487T7-rRofeKY61zsKng&_nc_ohc=LjwmZFVyvJEQ7kNvwHYRdGX&_nc_oc=Adk37cGL5eEoNnj4T5tIbC4vWDiyulzqUqPL4rdPzE5QJLJ-qBKdas74SlI9_rWmzXI&_nc_zt=23&_nc_ht=scontent.fmnl17-1.fna&_nc_gid=wDB12ER-tufLPiBFGoDFCA&oh=00_AfOqvWH9gZAXdpi_qrfzqGboo3ttbkuiQ2ZWVKpCdSAzpQ&oe=684863F3" alt="Certificate 1" class="w-24 h-24 object-cover rounded shadow">
+      <span class="text-lg" style="color: var(--color-text)">SCHOOL OF LEADERSHIP CERTIFICATE</span>
+    </li>
+
+      </ul>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-peach py-6" style="background-color: var(--color-bg)">
+    <div class="container mx-auto flex justify-center space-x-12 text-2xl" style="color: var(--color-text)">
+      <a href="https://www.facebook.com/eldharenjay.boa" target="_blank" aria-label="Facebook" class="hover:text-peach transition" rel="noopener noreferrer">
+        <svg fill="currentColor" class="w-6 h-6" viewBox="0 0 24 24" aria-hidden="true"><path d="M22.675 0h-21.35C.6 0 0 .6 0 1.325v21.351C0 23.4.6 24 1.325 24h11.495v-9.294H9.691v-3.622h3.129V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.466.099 2.797.143v3.244l-1.918.001c-1.504 0-1.797.715-1.797 1.763v2.313h3.59l-.467 3.622h-3.123V24h6.116C23.4 24 24 23.4 24 22.676v-21.35C24 .6 23.4 0 22.675 0z"/></svg>
+      </a>
+      <a href="https://www.instagram.com/dhaareenjay/" target="_blank" aria-label="Instagram" class="hover:text-peach transition" rel="noopener noreferrer">
+        <svg fill="currentColor" class="w-6 h-6" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75 2h8.5A5.75 5.75 0 0122 7.75v8.5A5.75 5.75 0 0116.25 22h-8.5A5.75 5.75 0 012 16.25v-8.5A5.75 5.75 0 017.75 2zM12 7a5 5 0 100 10 5 5 0 000-10zm6.5-1.75a1.25 1.25 0 11-2.5 0 1.25 1.25 0 012.5 0zM12 9.5a2.5 2.5 0 110 5 2.5 2.5 0 010-5z"/></svg>
+      </a>
+    </div>
+    <p class="text-center mt-4 text-opacity-50" style="color: var(--color-text)">&copy; 2025 Eldharenjay. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Layer switching
+    const navButtons = document.querySelectorAll('.nav-btn');
+    const layers = document.querySelectorAll('.layer');
+    const menuToggleBtn = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    function animateLayer(layer) {
+      // Remove old animation class if any to restart animation
+      layer.classList.remove('fade-zoom-in');
+      void layer.offsetWidth; // Trigger reflow
+      layer.classList.add('fade-zoom-in');
+    }
+
+    function showLayer(id) {
+      layers.forEach(layer => {
+        if (layer.id === id) {
+          layer.classList.remove('hidden-layer');
+          animateLayer(layer);
+        } else {
+          layer.classList.add('hidden-layer');
+          layer.classList.remove('fade-zoom-in', 'zoom-in');
+        }
+      });
+
+      navButtons.forEach(btn => {
+        if (btn.dataset.target === id) {
+          btn.classList.add('text-peach', 'font-semibold', 'border-b-2', 'border-peach');
+        } else {
+          btn.classList.remove('text-peach', 'font-semibold', 'border-b-2', 'border-peach');
+        }
+      });
+
+      // Close mobile menu after selection if open
+      if(mobileMenu.classList.contains('open')) {
+        mobileMenu.classList.remove('open');
+      }
+    }
+
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        showLayer(btn.dataset.target);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+
+    // Mobile menu toggle
+    menuToggleBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('open');
+    });
+
+    // Theme switching
+    const themeButtons = document.querySelectorAll('.theme-btn');
+    const root = document.documentElement;
+
+    function setTheme(theme) {
+      root.classList.remove('theme-white', 'theme-lightblue');
+      if(theme === 'white') {
+        root.classList.add('theme-white');
+      } else if(theme === 'lightblue') {
+        root.classList.add('theme-lightblue');
+      }
+      localStorage.setItem('theme-color', theme);
+      updateThemeButtons(theme);
+    }
+    function updateThemeButtons(activeTheme) {
+      themeButtons.forEach(btn => {
+        if(btn.dataset.theme === activeTheme) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    themeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        setTheme(btn.dataset.theme);
+      });
+    });
+
+    const savedTheme = localStorage.getItem('theme-color') || 'black';
+    setTheme(savedTheme);
+
+    showLayer('home');
+
+    // Contact form submit handler
+    function handleSubmit(event) {
+  event.preventDefault();
+  const form = document.getElementById('contact-form');
+  const name = form.name.value.trim();
+  const email = form.email.value.trim();
+  const message = form.message.value.trim();
+
+  if (!name || !email || !message) {
+    alert("Please fill out all fields.");
+    return false;
+  }
+
+  const subject = encodeURIComponent(`Message from ${name} (${email})`);
+  const body = encodeURIComponent(message);
+
+  const mailtoLink = `https://mail.google.com/mail/?view=cm&fs=1&to=eldharenjay@gmail.com&su=${subject}&body=${body}`;
+  window.open(mailtoLink, '_blank');
+
+  form.reset();
+  return false;
+}
+
+  </script>
+</body>
+</html
